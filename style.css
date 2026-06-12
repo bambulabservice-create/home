@@ -1,0 +1,35 @@
+      
+      body {
+        background-color: #ff0000;
+      }
+      h1 {
+        color: #0026ff;
+      }
+      p {
+        color: #00b7ff;
+      }
+      a {
+        color: #00ff00;
+      }
+      .makerworld-container {
+        border: 5px solid rgb(7, 86, 255); border-radius: 5px; color: #000000; width: 300px; height: 200px; margin: 20px; padding: 10px;
+      }
+      .index-container {
+        border: 5px solid rgb(7, 86, 255); border-radius: 5px; color: #000000; width: 300px; height: 200px; margin: 20px; padding: 10px;
+      }
+        button {
+          background-color: #0066ff;
+          color: #ff0000;
+          border: none;
+          padding: 10px 20px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin: 4px 2px;
+          cursor: pointer;
+          border-radius: 5px;
+        }
+          creality-container {
+            border: 5px solid rgb(60, 255, 0); border-radius: 5px; color: #2b8309; width: 300px; height: 200px; margin: 20px; padding: 10px;
+        }      
