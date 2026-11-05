@@ -74,35 +74,19 @@ input {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 0;
 }
 
 .brand-mark {
-  display: flex;
-  width: 23px;
-  height: 24px;
-  align-items: flex-end;
-  gap: 3px;
-  border-bottom: 2px solid var(--blue);
-}
-
-.brand-mark span {
   display: block;
-  width: 5px;
-  background: var(--red);
-}
-
-.brand-mark span:nth-child(1) {
-  height: 10px;
-}
-
-.brand-mark span:nth-child(2) {
-  height: 17px;
-  background: var(--blue);
-}
-
-.brand-mark span:nth-child(3) {
-  height: 13px;
+  width: 112px;
+  height: 79px;
+  flex: 0 0 112px;
+  overflow: hidden;
+  background-image: url("./logo.png");
+  background-position: -76px -33px;
+  background-repeat: no-repeat;
+  background-size: 263px 143px;
 }
 
 .brand-name {
@@ -1151,7 +1135,11 @@ p {
 }
 
 .footer-brand .brand-mark {
-  border-color: rgba(255, 255, 255, 0.75);
+  width: 102px;
+  height: 72px;
+  flex-basis: 102px;
+  background-position: -70px -30px;
+  background-size: 242px 132px;
 }
 
 .footer-brand .brand-name {
@@ -1254,6 +1242,14 @@ p {
 
   .site-header {
     min-height: 72px;
+  }
+
+  .brand-mark {
+    width: 96px;
+    height: 68px;
+    flex-basis: 96px;
+    background-position: -65px -28px;
+    background-size: 225px 122px;
   }
 
   .main-nav {
