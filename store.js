@@ -16,6 +16,7 @@ const cartStatus = document.querySelector("#cart-status");
 const products = window.HPM_STORE_PRODUCTS;
 const euro = new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" });
 const cartStorageKey = "hpm-store-cart";
+const productQuantityLimit = 5;
 let cart = loadCart();
 let pointerFrame = 0;
 let lastPointerEvent = null;
@@ -29,11 +30,20 @@ function loadCart() {
     const savedCart = JSON.parse(localStorage.getItem(cartStorageKey) || "[]");
     if (!Array.isArray(savedCart)) throw new TypeError("Winkelmand moet een lijst zijn");
 
+    const quantitiesByProduct = new Map();
     return savedCart.filter((item) => {
       const product = products.find((entry) => entry.folder === item.productFolder);
       const hasVariant = !item.variantFile
         || product?.variants?.some((variant) => variant.file === item.variantFile);
-      return product && hasVariant && Number.isInteger(item.quantity) && item.quantity > 0;
+      if (!product || !hasVariant || !Number.isInteger(item.quantity) || item.quantity <= 0) return false;
+
+      const alreadyInCart = quantitiesByProduct.get(product.folder) || 0;
+      const allowedQuantity = Math.min(item.quantity, productQuantityLimit - alreadyInCart);
+      if (allowedQuantity <= 0) return false;
+
+      item.quantity = allowedQuantity;
+      quantitiesByProduct.set(product.folder, alreadyInCart + allowedQuantity);
+      return true;
     });
   } catch (error) {
     console.warn("De bewaarde winkelmand kon niet worden geladen.", error);
@@ -63,11 +73,22 @@ function cartItemKey(productFolder, variantFile = "") {
   return `${productFolder}::${variantFile}`;
 }
 
+function getProductQuantity(productFolder) {
+  return cart.reduce((total, item) => (
+    item.productFolder === productFolder ? total + item.quantity : total
+  ), 0);
+}
+
 function getVariant(product, variantFile) {
   return product.variants?.find((variant) => variant.file === variantFile);
 }
 
 function addToCart(product, variant = null) {
+  if (getProductQuantity(product.folder) >= productQuantityLimit) {
+    cartStatus.textContent = `Je kunt maximaal ${productQuantityLimit} ${product.name} bestellen.`;
+    return;
+  }
+
   const existing = cart.find((item) => item.productFolder === product.folder
     && item.variantFile === (variant?.file || ""));
 
@@ -83,6 +104,7 @@ function addToCart(product, variant = null) {
 
   persistCart();
   renderCart();
+  renderProducts(searchInput.value);
   cartStatus.textContent = `${product.name}${variant ? ` — ${variant.name}` : ""} toegevoegd aan je winkelmand.`;
 }
 
@@ -96,6 +118,7 @@ function openVariantPicker(product) {
     const option = document.createElement("button");
     option.className = "variant-option";
     option.type = "button";
+    option.disabled = getProductQuantity(product.folder) >= productQuantityLimit;
 
     const name = document.createElement("span");
     name.textContent = variant.name;
@@ -174,6 +197,7 @@ function renderCart() {
     increase.type = "button";
     increase.textContent = "+";
     increase.setAttribute("aria-label", `Een ${product.name} meer`);
+    increase.disabled = getProductQuantity(product.folder) >= productQuantityLimit;
     increase.addEventListener("click", () => changeQuantity(item, 1));
 
     const remove = document.createElement("button");
@@ -196,18 +220,26 @@ function renderCart() {
 }
 
 function changeQuantity(item, amount) {
+  if (amount > 0 && getProductQuantity(item.productFolder) >= productQuantityLimit) {
+    const product = products.find((entry) => entry.folder === item.productFolder);
+    cartStatus.textContent = `Je kunt maximaal ${productQuantityLimit} ${product.name} bestellen.`;
+    return;
+  }
+
   item.quantity += amount;
   if (item.quantity <= 0) {
     cart = cart.filter((entry) => entry !== item);
   }
   persistCart();
   renderCart();
+  renderProducts(searchInput.value);
 }
 
 function removeFromCart(item) {
   cart = cart.filter((entry) => entry !== item);
   persistCart();
   renderCart();
+  renderProducts(searchInput.value);
 }
 
 function buildCheckoutMailto() {
@@ -224,6 +256,8 @@ function buildCheckoutMailto() {
     "Ik wil graag de volgende modellen bestellen:",
     ...lines,
     "",
+    "Ik haal de bestelling graag op bij Kareldoormanweg 27, Tollebeek.",
+    "Ik betaal bij ophalen, liefst contant; betalen via Tikkie kan ook.",
     "Willen jullie de bestelling, prijs en verdere details met mij bevestigen?",
     "",
     "Alvast bedankt!",
@@ -290,9 +324,13 @@ function renderProducts(query = "") {
     const addButton = document.createElement("button");
     addButton.className = "product-order";
     addButton.type = "button";
-    addButton.innerHTML = product.variants?.length > 1
-      ? 'Kies model <span aria-hidden="true">⌄</span>'
-      : 'In winkelmand <span aria-hidden="true">+</span>';
+    const atLimit = getProductQuantity(product.folder) >= productQuantityLimit;
+    addButton.disabled = atLimit;
+    addButton.innerHTML = atLimit
+      ? 'Limiet bereikt <span aria-hidden="true">✓</span>'
+      : product.variants?.length > 1
+        ? 'Kies model <span aria-hidden="true">⌄</span>'
+        : 'In winkelmand <span aria-hidden="true">+</span>';
     addButton.setAttribute("aria-label", product.variants?.length > 1
       ? `Kies een model van ${product.name}`
       : `${product.name} in winkelmand doen`);

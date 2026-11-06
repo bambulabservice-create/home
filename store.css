@@ -815,6 +815,11 @@ input {
   background: rgba(65, 105, 255, 0.12);
 }
 
+.variant-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .variant-option-add {
   flex: 0 0 auto;
   color: var(--blue);
@@ -865,6 +870,17 @@ input {
   background: transparent;
   color: var(--ink);
   cursor: pointer;
+}
+
+.cart-item-controls button:disabled,
+.product-order:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.product-order:disabled:hover {
+  gap: 11px;
+  background: var(--blue);
 }
 
 .cart-item-controls .cart-item-remove {
@@ -1018,6 +1034,20 @@ input {
   margin: 0;
   color: #aab6c0;
   font-size: 9px;
+}
+
+.store-footer > .store-attribution {
+  width: 100%;
+  margin-top: -6px;
+  color: #aab6c0;
+  font-size: 8px;
+  text-align: center;
+}
+
+.store-attribution a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .store-footer > a:not(.brand) {
@@ -1268,6 +1298,13 @@ input {
   .store-footer > p {
     grid-column: 2;
     grid-row: 1;
+  }
+
+  .store-footer > .store-attribution {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    margin-top: 0;
+    text-align: left;
   }
 
   .store-footer > a:not(.brand) {
