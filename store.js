@@ -300,7 +300,7 @@ function buildCheckoutMailto() {
     "Ik wil graag de volgende modellen bestellen:",
     ...lines,
     "",
-    "Ik haal de bestelling graag op bij Kareldoormanweg 27, Tollebeek.",
+    "Ik haal de bestelling graag op afspraak op.",
     "Ik betaal bij ophalen, liefst contant; betalen via Tikkie kan ook.",
     "Willen jullie de bestelling, prijs en verdere details met mij bevestigen?",
     "",

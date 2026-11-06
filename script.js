@@ -65,7 +65,7 @@ function updateEstimate() {
     `Filamentgewicht volgens Bambu Studio: ${hasWeight ? `${weight} gram` : "nog niet bekend"}`,
     `Filamentkleur: ${filamentOptions.find((filament) => filament.id === filamentChoice.value)?.label || "nog niet gekozen"}`,
     `Verwerkingskosten eigen model: ${euro.format(CUSTOM_MODEL_PROCESSING_FEE)}`,
-    "Ophalen: gratis bij Kareldoormanweg 27, Tollebeek (op afspraak)",
+    "Ophalen: gratis, op afspraak",
     `Prijsindicatie: ${total === null ? "nog niet bekend" : euro.format(total)}`,
     "Betalen kan bij ophalen, liefst contant; Tikkie kan ook.",
     "",

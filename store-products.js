@@ -2,7 +2,7 @@
 window.HPM_STORE_PRODUCTS = [
   { folder: "10in1fidget", image: "Schermafbeelding 2026-11-06 115801.png", name: "10-in-1 Fidget", price: 11.30 },
   { folder: "bubblepopper", image: "Schermafbeelding 2026-11-06 121327.png", name: "Bubble Popper", price: 1.10 },
-  { folder: "catepillar", image: "Schermafbeelding 2026-11-06 121641.png", name: "Caterpillar", price: 0.20 },
+  { folder: "catepillar", image: "Schermafbeelding 2026-11-06 121641.jpg", name: "Caterpillar", price: 0.20 },
   { folder: "ClickySlidefidget", image: "Schermafbeelding 2026-11-06 115910.png", name: "Clicky Slide Fidget", price: 0.90 },
   { folder: "fidgetcube", image: "Schermafbeelding 2026-11-06 115648.png", name: "Fidget Cube", price: 2.30 },
   { folder: "flexi slug", image: "Schermafbeelding 2026-11-06 121539.png", name: "Flexi Slug", price: 4.70 },
