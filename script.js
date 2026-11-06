@@ -15,8 +15,18 @@ const previewEmpty = document.querySelector("#preview-empty");
 const previewStatus = document.querySelector("#preview-status");
 const previewFile = document.querySelector("#preview-file");
 const previewReset = document.querySelector("#preview-reset");
+const typedPhrase = document.querySelector("#typed-phrase");
 const context = canvas.getContext("2d");
 const euro = new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" });
+const heroPhrases = [
+  "Laag voor laag.",
+  "Van idee naar echt.",
+  "Met aandacht gemaakt.",
+  "Samen maken we meer.",
+  "Klein idee. Groot gemaakt.",
+  "Ontworpen door jou.",
+];
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 let triangles = [];
 let modelScale = 1;
@@ -27,6 +37,8 @@ let isDragging = false;
 let dragPosition = null;
 let animationFrame = 0;
 let lastFrame = 0;
+let pointerFrame = 0;
+let lastPointerEvent = null;
 
 function getDeliveryDetails() {
   const delivery = document.querySelector('input[name="delivery"]:checked').value;
@@ -66,6 +78,76 @@ function setTheme(isDark) {
   themeToggle.querySelector(".theme-label").textContent = isDark ? "Light theme" : "Dark theme";
   document.querySelector('meta[name="theme-color"]').content = isDark ? "#10172b" : "#f4f6fb";
   if (triangles.length) drawModel();
+}
+
+function startHeroTyping() {
+  const previousIndex = Number(localStorage.getItem("hpm-hero-phrase-index"));
+  const nextIndex = Number.isInteger(previousIndex)
+    ? (previousIndex + 1) % heroPhrases.length
+    : Math.floor(Math.random() * heroPhrases.length);
+  localStorage.setItem("hpm-hero-phrase-index", String(nextIndex));
+
+  const selectedPhrase = heroPhrases[nextIndex];
+  if (prefersReducedMotion.matches) {
+    typedPhrase.textContent = selectedPhrase;
+    return;
+  }
+
+  let phraseIndex = nextIndex;
+  let characterIndex = selectedPhrase.length;
+  let deleting = true;
+
+  const typeStep = () => {
+    const phrase = heroPhrases[phraseIndex];
+
+    if (deleting) {
+      characterIndex -= 1;
+    } else {
+      characterIndex += 1;
+    }
+
+    typedPhrase.textContent = phrase.slice(0, characterIndex);
+
+    if (deleting && characterIndex === 0) {
+      deleting = false;
+      phraseIndex = (phraseIndex + 1) % heroPhrases.length;
+    } else if (!deleting && characterIndex === phrase.length) {
+      deleting = true;
+      window.setTimeout(typeStep, 2300);
+      return;
+    }
+
+    window.setTimeout(typeStep, deleting ? 48 : 78);
+  };
+
+  window.setTimeout(typeStep, 2300);
+}
+
+function trackAmbientLight(event) {
+  lastPointerEvent = event;
+  if (pointerFrame) return;
+
+  pointerFrame = requestAnimationFrame(() => {
+    pointerFrame = 0;
+    const pointer = lastPointerEvent;
+    if (!pointer) return;
+
+    document.documentElement.style.setProperty("--glow-x", `${pointer.clientX}px`);
+    document.documentElement.style.setProperty("--glow-y", `${pointer.clientY}px`);
+
+    const target = pointer.target instanceof Element ? pointer.target : null;
+    const surface = target?.closest(".hero-art, .glass-card, .order-card, .step");
+    document.querySelectorAll(".hero-art, .glass-card, .order-card, .step").forEach((element) => {
+      if (element === surface) {
+        const bounds = element.getBoundingClientRect();
+        element.style.setProperty("--surface-x", `${pointer.clientX - bounds.left}px`);
+        element.style.setProperty("--surface-y", `${pointer.clientY - bounds.top}px`);
+      } else {
+        element.style.removeProperty("--surface-x");
+        element.style.removeProperty("--surface-y");
+      }
+    });
+  });
 }
 
 function parseBinarySTL(buffer) {
@@ -391,4 +473,9 @@ if ("IntersectionObserver" in window) {
   document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
 }
 
+if (window.matchMedia("(hover: hover) and (pointer: fine)").matches && !prefersReducedMotion.matches) {
+  document.addEventListener("pointermove", trackAmbientLight, { passive: true });
+}
+
+startHeroTyping();
 updateEstimate();

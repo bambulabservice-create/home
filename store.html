@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f6fb" />
+    <meta name="description" content="Bekijk de Holy Print Moly collectie 3D-prints. Elk model wordt geprint op aanvraag." />
+    <title>Store — Holy Print Moly</title>
+    <link rel="icon" href="./logo.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="store.css" />
+    <script src="store-products.js" defer></script>
+    <script src="store.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Ga naar de inhoud</a>
+    <header class="store-header">
+      <a class="brand" href="./index.html" aria-label="Holy Print Moly — home">
+        <span class="brand-mark" role="img" aria-label="Holy Print Moly — 3D printing solutions"></span>
+      </a>
+      <nav class="store-nav" aria-label="Hoofdnavigatie">
+        <a class="store-nav-link is-current" href="./store.html" aria-current="page">Store</a>
+        <a class="store-nav-link" href="./index.html#werkwijze">Werkwijze</a>
+        <a class="store-nav-link" href="./index.html#prijzen">Prijzen</a>
+        <button class="cart-toggle" id="cart-toggle" type="button" aria-haspopup="dialog" aria-controls="cart-dialog">
+          Winkelmand <span class="cart-count" id="cart-count" aria-live="polite">0</span>
+        </button>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Schakel naar dark theme" aria-pressed="false">
+          <span class="theme-icon" aria-hidden="true">☾</span>
+          <span class="theme-label">Dark theme</span>
+        </button>
+        <a class="store-cta" href="./index.html#offerte">Eigen model laten printen <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="store-hero">
+        <div class="store-hero-copy">
+          <p class="eyebrow"><span class="eyebrow-line"></span> HOLY PRINT MOLY · STORE</p>
+          <h1>Kies iets leuks.<br /><span>Wij printen 't.</span></h1>
+          <p>Ontdek de modellen uit onze collectie. Iets gevonden? Stuur ons een bericht en we maken 'm voor je op onze Bambu Lab P1S.</p>
+          <a class="hero-link" href="#collectie">Bekijk de collectie <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="store-hero-art" aria-hidden="true">
+          <span class="hero-art-label">COLLECTIE&nbsp; / &nbsp;HPM</span>
+          <div class="hero-cube">
+            <span class="cube-top"></span>
+            <span class="cube-left"></span>
+            <span class="cube-right"></span>
+            <span class="cube-layers"></span>
+          </div>
+          <span class="hero-art-caption">GEMAAKT OP AANVRAAG</span>
+        </div>
+      </section>
+
+      <section class="collection-section" id="collectie">
+        <div class="collection-heading">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span> DE EERSTE SELECTIE</p>
+            <h2>De collectie<span>.</span></h2>
+          </div>
+          <p class="collection-note"><span class="collection-count" id="collection-count">—</span> modellen <i>·</i> Geprint op aanvraag</p>
+        </div>
+        <div class="collection-toolbar">
+          <label class="search-box">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <span class="sr-only">Zoek in de collectie</span>
+            <input id="product-search" type="search" placeholder="Zoek een model…" autocomplete="off" />
+            <span class="search-shortcut" aria-hidden="true">⌕</span>
+          </label>
+          <span class="collection-material"><span></span> Bambu Lab P1S</span>
+        </div>
+        <div class="product-grid" id="product-grid" aria-live="polite"></div>
+        <p class="no-results" id="no-results" hidden>Geen modellen gevonden. Probeer een andere zoekterm.</p>
+      </section>
+
+      <section class="store-bottom">
+        <div class="store-bottom-inner">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span> IETS ANDERS IN GEDACHTEN?</p>
+            <h2>Jouw eigen idee<br /><span>printen we ook.</span></h2>
+          </div>
+          <a href="./index.html#offerte">Ontdek onze printservice <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="store-footer">
+      <a class="brand footer-brand" href="./index.html" aria-label="Holy Print Moly — home">
+        <span class="brand-mark" role="img" aria-label="Holy Print Moly — 3D printing solutions"></span>
+      </a>
+      <p>Opgericht door Thomas &amp; Joel.</p>
+      <a href="mailto:bambulabservice@gmail.com">bambulabservice@gmail.com <span aria-hidden="true">↗</span></a>
+      <span class="copyright">© 2026 HOLY PRINT MOLY</span>
+    </footer>
+
+    <p class="cart-status sr-only" id="cart-status" role="status" aria-live="polite"></p>
+
+    <dialog class="store-dialog" id="variant-dialog" aria-labelledby="variant-dialog-title" aria-describedby="variant-dialog-description">
+      <div class="dialog-panel">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">KIES JE UITVOERING</p>
+            <h2 id="variant-dialog-title">Selecteer een model</h2>
+          </div>
+          <button class="dialog-close" type="button" data-close-dialog aria-label="Sluiten">×</button>
+        </div>
+        <p class="dialog-description" id="variant-dialog-description"></p>
+        <div class="variant-list" id="variant-list"></div>
+      </div>
+    </dialog>
+
+    <dialog class="store-dialog" id="cart-dialog" aria-labelledby="cart-dialog-title">
+      <div class="dialog-panel">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">JOUW SELECTIE</p>
+            <h2 id="cart-dialog-title">Winkelmand</h2>
+          </div>
+          <button class="dialog-close" type="button" data-close-dialog aria-label="Sluiten">×</button>
+        </div>
+        <div class="cart-items" id="cart-items"></div>
+        <p class="cart-empty" id="cart-empty">Je winkelmand is nog leeg.</p>
+        <div class="cart-summary">
+          <span id="cart-total-label">Totaal</span>
+          <strong id="cart-total">—</strong>
+        </div>
+        <p class="cart-note">De bestelling wordt per e-mail aangevraagd. We bevestigen de prijs en details in ons antwoord.</p>
+        <button class="checkout-button" id="checkout-button" type="button" disabled>Mail bestelling <span aria-hidden="true">↗</span></button>
+      </div>
+    </dialog>
+  </body>
+</html>

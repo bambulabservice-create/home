@@ -34,7 +34,12 @@ html {
 
 body {
   margin: 0;
+  min-height: 100vh;
   background: var(--paper);
+  background-image:
+    radial-gradient(560px circle at var(--glow-x, 82vw) var(--glow-y, 24vh), rgba(23, 69, 232, 0.12), transparent 68%),
+    radial-gradient(520px circle at 10% 70%, rgba(241, 38, 60, 0.045), transparent 72%);
+  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
@@ -80,9 +85,9 @@ input {
   justify-content: space-between;
   padding: 0 7.2%;
   border-bottom: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(22px) saturate(170%);
-  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  background: rgba(255, 255, 255, 0.56);
+  backdrop-filter: blur(26px) saturate(190%);
+  -webkit-backdrop-filter: blur(26px) saturate(190%);
 }
 
 .brand {
@@ -97,7 +102,6 @@ input {
   height: 79px;
   flex: 0 0 112px;
   overflow: hidden;
-  background-color: #fff;
   background-image: url("./logo.png");
   background-position: -76px -33px;
   background-repeat: no-repeat;
@@ -198,7 +202,9 @@ input {
   column-gap: clamp(24px, 4vw, 52px);
   align-items: center;
   padding: 43px max(7.2%, calc((100% - 1120px) / 2)) 76px;
-  background: var(--blue);
+  background:
+    radial-gradient(680px circle at var(--glow-x, 82vw) var(--glow-y, 24vh), rgba(92, 130, 255, 0.32), transparent 72%),
+    var(--blue);
   color: var(--white);
 }
 
@@ -251,6 +257,26 @@ p {
   letter-spacing: -0.085em;
   line-height: 0.98;
   color: var(--white);
+}
+
+.typed-line {
+  display: inline;
+  color: var(--red);
+}
+
+.typed-phrase {
+  border-right: 3px solid currentColor;
+  animation: caret-blink 850ms steps(2, start) infinite;
+}
+
+.screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .hero h1 span,
@@ -340,10 +366,11 @@ p {
   margin: 0;
   overflow: hidden;
   background:
+    radial-gradient(370px circle at var(--surface-x, 50%) var(--surface-y, 50%), rgba(255, 255, 255, 0.46), transparent 70%),
     linear-gradient(90deg, transparent 49.8%, rgba(23, 69, 232, 0.1) 50%, transparent 50.2%),
     linear-gradient(0deg, transparent 49.8%, rgba(23, 69, 232, 0.1) 50%, transparent 50.2%),
     rgba(244, 246, 251, 0.82);
-  background-size: 70px 70px, 70px 70px, auto;
+  background-size: auto, 70px 70px, 70px 70px, auto;
   border: 1px solid rgba(255, 255, 255, 0.58);
   backdrop-filter: blur(16px) saturate(135%);
   -webkit-backdrop-filter: blur(16px) saturate(135%);
@@ -514,6 +541,7 @@ p {
 .process {
   padding-top: 125px;
   padding-bottom: 133px;
+  background: transparent;
 }
 
 .section-heading {
@@ -541,6 +569,8 @@ p {
   position: relative;
   min-height: 270px;
   padding: 27px 30px 24px 0;
+  background: radial-gradient(240px circle at var(--surface-x, 50%) var(--surface-y, 50%), rgba(23, 69, 232, 0.09), transparent 75%);
+  transition: background-size 350ms ease;
 }
 
 .step + .step {
@@ -666,6 +696,7 @@ p {
   gap: 7%;
   padding-top: 8px;
   padding-bottom: 130px;
+  background: transparent;
 }
 
 .preview-heading h2 {
@@ -692,9 +723,9 @@ p {
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.56);
-  background: rgba(255, 255, 255, 0.52);
-  backdrop-filter: blur(24px) saturate(155%);
-  -webkit-backdrop-filter: blur(24px) saturate(155%);
+  background: rgba(255, 255, 255, 0.38);
+  backdrop-filter: blur(28px) saturate(175%);
+  -webkit-backdrop-filter: blur(28px) saturate(175%);
   transition: border-color 300ms ease, background-color 300ms ease, transform 300ms ease;
 }
 
@@ -712,6 +743,26 @@ p {
   transition: left 700ms cubic-bezier(0.2, 0.65, 0.3, 1);
 }
 
+.glass-card::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: radial-gradient(320px circle at var(--surface-x, 50%) var(--surface-y, 50%), rgba(70, 116, 255, 0.12), transparent 76%);
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms ease;
+}
+
+.glass-card:hover::after {
+  opacity: 1;
+}
+
+.glass-card > * {
+  position: relative;
+  z-index: 2;
+}
+
 .glass-card:hover::before {
   left: 145%;
 }
@@ -721,8 +772,6 @@ p {
 }
 
 .preview-toolbar {
-  position: relative;
-  z-index: 2;
   display: flex;
   min-height: 69px;
   align-items: center;
@@ -789,7 +838,6 @@ p {
 }
 
 .preview-stage {
-  position: relative;
   display: grid;
   min-height: 350px;
   overflow: hidden;
@@ -911,8 +959,6 @@ p {
 }
 
 .preview-status {
-  position: relative;
-  z-index: 2;
   min-height: 43px;
   margin: 0;
   padding: 13px 17px;
@@ -924,7 +970,9 @@ p {
 
 .pricing-section {
   padding: 110px 0 114px;
-  background: var(--blue);
+  background:
+    radial-gradient(640px circle at var(--glow-x, 82vw) var(--glow-y, 24vh), rgba(93, 132, 255, 0.36), transparent 72%),
+    linear-gradient(123deg, #123bdd, var(--blue) 54%, #1137c5);
   color: var(--white);
 }
 
@@ -1046,7 +1094,7 @@ p {
 
 .order-section {
   padding-top: 116px;
-  background: var(--paper);
+  background: transparent;
 }
 
 .order-layout {
@@ -1109,8 +1157,12 @@ p {
 
 .order-card {
   padding: clamp(20px, 3.2vw, 36px);
-  border: 1px solid var(--line);
-  background: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background:
+    radial-gradient(360px circle at var(--surface-x, 50%) var(--surface-y, 50%), rgba(65, 105, 255, 0.09), transparent 74%),
+    rgba(255, 255, 255, 0.59);
+  backdrop-filter: blur(26px) saturate(165%);
+  -webkit-backdrop-filter: blur(26px) saturate(165%);
 }
 
 .form-section-label {
@@ -1524,7 +1576,7 @@ p {
 
 :root[data-theme="dark"] body {
   background:
-    radial-gradient(ellipse at 82% 18%, rgba(65, 105, 255, 0.12), transparent 34%),
+    radial-gradient(560px circle at var(--glow-x, 82vw) var(--glow-y, 24vh), rgba(65, 105, 255, 0.18), transparent 68%),
     radial-gradient(ellipse at 8% 68%, rgba(255, 64, 88, 0.08), transparent 30%),
     var(--paper);
 }
@@ -1545,12 +1597,15 @@ p {
 }
 
 :root[data-theme="dark"] .hero {
-  background: #19327e;
+  background:
+    radial-gradient(680px circle at var(--glow-x, 82vw) var(--glow-y, 24vh), rgba(103, 133, 255, 0.31), transparent 72%),
+    #19327e;
 }
 
 :root[data-theme="dark"] .hero-art {
   border-color: rgba(255, 255, 255, 0.24);
   background:
+    radial-gradient(370px circle at var(--surface-x, 50%) var(--surface-y, 50%), rgba(142, 165, 255, 0.24), transparent 70%),
     linear-gradient(90deg, transparent 49.8%, rgba(122, 151, 255, 0.1) 50%, transparent 50.2%),
     linear-gradient(0deg, transparent 49.8%, rgba(122, 151, 255, 0.1) 50%, transparent 50.2%),
     rgba(15, 23, 43, 0.76);
@@ -1586,7 +1641,9 @@ p {
 }
 
 :root[data-theme="dark"] .pricing-section {
-  background: #172654;
+  background:
+    radial-gradient(640px circle at var(--glow-x, 82vw) var(--glow-y, 24vh), rgba(105, 137, 255, 0.29), transparent 72%),
+    linear-gradient(123deg, #14234b, #172654 54%, #111f45);
 }
 
 :root[data-theme="dark"] .rate-unit {
@@ -1601,6 +1658,10 @@ p {
 :root[data-theme="dark"] .glass-card {
   border-color: rgba(188, 203, 255, 0.2);
   background: rgba(25, 35, 59, 0.59);
+}
+
+:root[data-theme="dark"] .glass-card::after {
+  background: radial-gradient(320px circle at var(--surface-x, 50%) var(--surface-y, 50%), rgba(105, 137, 255, 0.22), transparent 76%);
 }
 
 :root[data-theme="dark"] .glass-card::before {
@@ -1621,7 +1682,9 @@ p {
 
 :root[data-theme="dark"] .order-card {
   border-color: rgba(188, 203, 255, 0.2);
-  background: rgba(20, 29, 49, 0.74);
+  background:
+    radial-gradient(360px circle at var(--surface-x, 50%) var(--surface-y, 50%), rgba(65, 105, 255, 0.17), transparent 74%),
+    rgba(20, 29, 49, 0.58);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -1792,6 +1855,12 @@ p {
 
   .main-nav > a:not(.nav-cta) {
     display: none;
+  }
+
+  .main-nav > a.store-nav-entry {
+    display: inline-flex;
+    color: var(--red);
+    font-size: 10px;
   }
 
   .nav-cta {
@@ -2099,6 +2168,10 @@ p {
   .has-motion .reveal {
     opacity: 1;
     transform: none;
+  }
+
+  .typed-phrase {
+    border-right: 0;
   }
 
   .print-object,
