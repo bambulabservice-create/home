@@ -22,7 +22,7 @@ window.HPM_STORE_PRODUCTS = [
     folder: "musicfidget",
     image: "Schermafbeelding 2026-11-06 120636.png",
     name: "Music Fidget",
-    price: null,
+    price: 4.00,
     variants: [
       { file: "Among+Us+-+Drip.3mf", name: "Among Us — Drip" },
       { file: "Angry+Birds+-+Theme.3mf", name: "Angry Birds — Theme" },

@@ -1,4 +1,5 @@
 const PRINT_PRICE_PER_GRAM = 0.12;
+const CUSTOM_MODEL_PROCESSING_FEE = 2;
 const ORDER_EMAIL = "bambulabservice@gmail.com";
 const MAX_STL_BYTES = 25 * 1024 * 1024;
 const MAX_STL_TRIANGLES = 25000;
@@ -42,7 +43,8 @@ let lastPointerEvent = null;
 function updateEstimate() {
   const weight = Number(weightInput.value);
   const hasWeight = weightInput.value !== "" && Number.isFinite(weight) && weight > 0;
-  const total = hasWeight ? weight * PRINT_PRICE_PER_GRAM : null;
+  const printPrice = hasWeight ? weight * PRINT_PRICE_PER_GRAM : null;
+  const total = hasWeight ? printPrice + CUSTOM_MODEL_PROCESSING_FEE : null;
 
   estimateOutput.textContent = total === null ? "Vul gewicht in" : euro.format(total);
 
@@ -52,6 +54,7 @@ function updateEstimate() {
     "Ik wil graag informeren naar een 3D-print op jullie Bambu Lab P1S.",
     "",
     `Filamentgewicht volgens Bambu Studio: ${hasWeight ? `${weight} gram` : "nog niet bekend"}`,
+    `Verwerkingskosten eigen model: ${euro.format(CUSTOM_MODEL_PROCESSING_FEE)}`,
     "Ophalen: gratis bij Kareldoormanweg 27, Tollebeek (op afspraak)",
     `Prijsindicatie: ${total === null ? "nog niet bekend" : euro.format(total)}`,
     "Betalen kan bij ophalen, liefst contant; Tikkie kan ook.",
