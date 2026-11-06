@@ -29,6 +29,10 @@
       <nav class="main-nav" aria-label="Hoofdnavigatie">
         <a href="#werkwijze">Werkwijze</a>
         <a href="#prijzen">Prijzen</a>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Schakel naar dark theme" aria-pressed="false">
+          <span class="theme-icon" aria-hidden="true">☾</span>
+          <span class="theme-label">Dark theme</span>
+        </button>
         <a class="nav-cta" href="#offerte">Laat jouw model printen <span aria-hidden="true">↗</span></a>
       </nav>
     </header>
@@ -106,6 +110,42 @@
             <p>Voeg het bestand zelf als bijlage toe aan je e-mail. Na overleg printen we 'm en verzenden of halen we af.</p>
             <span class="step-rule"></span>
           </article>
+        </div>
+      </section>
+
+      <section class="preview-section section-wrap" id="stl-preview">
+        <div class="preview-heading reveal">
+          <p class="eyebrow"><span class="eyebrow-line"></span> Bekijk je ontwerp</p>
+          <h2>Jouw model,<br /><span>in 3D.</span></h2>
+          <p>Laad een STL-bestand en bekijk je ontwerp hier alvast. Je bestand blijft op je eigen apparaat en wordt niet verstuurd.</p>
+        </div>
+        <div class="preview-card glass-card reveal">
+          <div class="preview-toolbar">
+            <label class="preview-upload button button-primary" for="stl-file">
+              <span>Open STL-bestand</span><span aria-hidden="true">↗</span>
+              <input id="stl-file" type="file" accept=".stl,model/stl" />
+            </label>
+            <span class="preview-file" id="preview-file">GEEN MODEL GEOPEND</span>
+            <button class="preview-reset" id="preview-reset" type="button" disabled>Reset weergave <span aria-hidden="true">⟳</span></button>
+          </div>
+          <div class="preview-stage" id="preview-stage">
+            <canvas id="model-canvas" aria-label="Interactieve 3D-preview van je STL-model"></canvas>
+            <div class="preview-empty" id="preview-empty">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <path d="m60 13 40 23v48l-40 23L20 84V36l40-23Z" />
+                <path d="m20 36 40 23 40-23M60 59v48" />
+                <path d="M37 46v30m8-25v30m8-25v30m8-27v27m8-32v32m8-37v32" />
+              </svg>
+              <strong>Je preview begint hier</strong>
+              <span>Open een .stl-bestand om je model te bekijken</span>
+              <span class="preview-drop-hint">of sleep het bestand naar dit vlak</span>
+            </div>
+            <span class="preview-axis" aria-hidden="true">X <i>·</i> Y <i>·</i> Z</span>
+            <span class="preview-help" id="preview-help">Sleep om te draaien <i>·</i> scroll om in te zoomen</span>
+          </div>
+          <p class="preview-status" id="preview-status" role="status" aria-live="polite">
+            Je STL wordt alleen lokaal in deze preview geopend.
+          </p>
         </div>
       </section>
 
