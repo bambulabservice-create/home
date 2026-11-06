@@ -1188,18 +1188,22 @@ p {
   font-weight: 700;
 }
 
-.field input {
+.field input,
+.field select {
   width: 100%;
   min-height: 42px;
-  padding: 0 0 4px;
-  border: 0;
-  border-bottom: 1px solid var(--blue);
+  padding: 0 4px;
+  border: 1px solid var(--line);
   border-radius: 0;
   outline: 0;
-  background: transparent;
+  background: var(--paper);
   color: var(--ink);
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.filament-field {
+  margin-bottom: 14px;
 }
 
 .estimate-panel {

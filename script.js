@@ -7,6 +7,8 @@ const MAX_STL_TRIANGLES = 25000;
 const weightInput = document.querySelector("#weight");
 const estimateOutput = document.querySelector("#estimate-total");
 const emailLink = document.querySelector("#email-link");
+const filamentChoice = document.querySelector("#filament-choice");
+const filamentOptions = window.HPM_FILAMENT_OPTIONS;
 const themeToggle = document.querySelector("#theme-toggle");
 const stlInput = document.querySelector("#stl-file");
 const canvas = document.querySelector("#model-canvas");
@@ -27,6 +29,13 @@ const heroPhrases = [
   "Ontworpen door jou.",
 ];
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+filamentOptions.forEach((filament) => {
+  const option = document.createElement("option");
+  option.value = filament.id;
+  option.textContent = filament.label;
+  filamentChoice.append(option);
+});
 
 let triangles = [];
 let modelScale = 1;
@@ -54,6 +63,7 @@ function updateEstimate() {
     "Ik wil graag informeren naar een 3D-print op jullie Bambu Lab P1S.",
     "",
     `Filamentgewicht volgens Bambu Studio: ${hasWeight ? `${weight} gram` : "nog niet bekend"}`,
+    `Filamentkleur: ${filamentOptions.find((filament) => filament.id === filamentChoice.value)?.label || "nog niet gekozen"}`,
     `Verwerkingskosten eigen model: ${euro.format(CUSTOM_MODEL_PROCESSING_FEE)}`,
     "Ophalen: gratis bij Kareldoormanweg 27, Tollebeek (op afspraak)",
     `Prijsindicatie: ${total === null ? "nog niet bekend" : euro.format(total)}`,
@@ -374,6 +384,7 @@ function resizeCanvas() {
 }
 
 weightInput.addEventListener("input", updateEstimate);
+filamentChoice.addEventListener("change", updateEstimate);
 
 themeToggle.addEventListener("click", () => {
   const isDark = document.documentElement.dataset.theme !== "dark";

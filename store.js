@@ -14,6 +14,7 @@ const cartTotal = document.querySelector("#cart-total");
 const checkoutButton = document.querySelector("#checkout-button");
 const cartStatus = document.querySelector("#cart-status");
 const products = window.HPM_STORE_PRODUCTS;
+const filamentOptions = window.HPM_FILAMENT_OPTIONS;
 const euro = new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" });
 const cartStorageKey = "hpm-store-cart";
 const productQuantityLimit = 5;
@@ -36,6 +37,7 @@ function loadCart() {
       const hasVariant = !item.variantFile
         || product?.variants?.some((variant) => variant.file === item.variantFile);
       if (!product || !hasVariant || !Number.isInteger(item.quantity) || item.quantity <= 0) return false;
+      if (!filamentOptions.some((filament) => filament.id === item.filamentId)) item.filamentId = "";
 
       const alreadyInCart = quantitiesByProduct.get(product.folder) || 0;
       const allowedQuantity = Math.min(item.quantity, productQuantityLimit - alreadyInCart);
@@ -69,8 +71,8 @@ function setTheme(isDark) {
   document.querySelector('meta[name="theme-color"]').content = isDark ? "#10172b" : "#f4f6fb";
 }
 
-function cartItemKey(productFolder, variantFile = "") {
-  return `${productFolder}::${variantFile}`;
+function cartItemKey(productFolder, variantFile = "", filamentId = "") {
+  return `${productFolder}::${variantFile}::${filamentId}`;
 }
 
 function getProductQuantity(productFolder) {
@@ -83,14 +85,15 @@ function getVariant(product, variantFile) {
   return product.variants?.find((variant) => variant.file === variantFile);
 }
 
-function addToCart(product, variant = null) {
+function addToCart(product, filamentId, variant = null) {
   if (getProductQuantity(product.folder) >= productQuantityLimit) {
     cartStatus.textContent = `Je kunt maximaal ${productQuantityLimit} ${product.name} bestellen.`;
     return;
   }
 
   const existing = cart.find((item) => item.productFolder === product.folder
-    && item.variantFile === (variant?.file || ""));
+    && item.variantFile === (variant?.file || "")
+    && item.filamentId === filamentId);
 
   if (existing) {
     existing.quantity += 1;
@@ -98,6 +101,7 @@ function addToCart(product, variant = null) {
     cart.push({
       productFolder: product.folder,
       variantFile: variant?.file || "",
+      filamentId,
       quantity: 1,
     });
   }
@@ -108,7 +112,7 @@ function addToCart(product, variant = null) {
   cartStatus.textContent = `${product.name}${variant ? ` — ${variant.name}` : ""} toegevoegd aan je winkelmand.`;
 }
 
-function openVariantPicker(product) {
+function openVariantPicker(product, filamentId) {
   document.querySelector("#variant-dialog-title").textContent = `Kies een ${product.name}`;
   document.querySelector("#variant-dialog-description").textContent =
     "Kies hieronder de uitvoering die je aan je winkelmand wilt toevoegen.";
@@ -129,7 +133,7 @@ function openVariantPicker(product) {
 
     option.append(name, addLabel);
     option.addEventListener("click", () => {
-      addToCart(product, variant);
+      addToCart(product, filamentId, variant);
       variantDialog.close();
     });
     variantList.append(option);
@@ -138,13 +142,48 @@ function openVariantPicker(product) {
   variantDialog.showModal();
 }
 
+function createFilamentSelect(value, label) {
+  const select = document.createElement("select");
+  select.className = "filament-select";
+  select.setAttribute("aria-label", label);
+
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Kies een kleur";
+  select.append(placeholder);
+
+  filamentOptions.forEach((filament) => {
+    const option = document.createElement("option");
+    option.value = filament.id;
+    option.textContent = filament.label;
+    select.append(option);
+  });
+  select.value = value || "";
+  return select;
+}
+
+function setCartItemFilament(item, filamentId) {
+  item.filamentId = filamentId;
+  const duplicate = cart.find((entry) => entry !== item
+    && entry.productFolder === item.productFolder
+    && entry.variantFile === item.variantFile
+    && entry.filamentId === filamentId);
+  if (duplicate) {
+    duplicate.quantity += item.quantity;
+    cart = cart.filter((entry) => entry !== item);
+  }
+  persistCart();
+  renderCart();
+  renderProducts(searchInput.value);
+}
+
 function renderCart() {
   const quantity = cart.reduce((total, item) => total + item.quantity, 0);
   cartCount.textContent = quantity.toString();
   cartToggle.setAttribute("aria-label", `Winkelmand, ${quantity} ${quantity === 1 ? "artikel" : "artikelen"}`);
   cartItems.replaceChildren();
   cartEmpty.hidden = cart.length > 0;
-  checkoutButton.disabled = cart.length === 0;
+  checkoutButton.disabled = cart.length === 0 || cart.some((item) => !item.filamentId);
 
   let total = 0;
   let hasUnknownPrice = false;
@@ -155,7 +194,7 @@ function renderCart() {
     const variant = getVariant(product, item.variantFile);
     const row = document.createElement("article");
     row.className = "cart-item";
-    row.dataset.key = cartItemKey(item.productFolder, item.variantFile);
+    row.dataset.key = cartItemKey(item.productFolder, item.variantFile, item.filamentId);
 
     const details = document.createElement("div");
     details.className = "cart-item-details";
@@ -169,6 +208,10 @@ function renderCart() {
       variantName.textContent = variant.name;
       details.append(variantName);
     }
+
+    const filamentSelect = createFilamentSelect(item.filamentId, `Filamentkleur voor ${product.name}`);
+    filamentSelect.addEventListener("change", () => setCartItemFilament(item, filamentSelect.value));
+    details.append(filamentSelect);
 
     const linePrice = document.createElement("p");
     linePrice.className = "cart-item-price";
@@ -247,8 +290,9 @@ function buildCheckoutMailto() {
     const product = products.find((entry) => entry.folder === item.productFolder);
     const variant = getVariant(product, item.variantFile);
     const selection = variant ? ` — ${variant.name}` : "";
+    const filament = filamentOptions.find((entry) => entry.id === item.filamentId);
     const price = isPriceAvailable(product) ? ` (${euro.format(product.price)} per stuk)` : " (prijs volgt)";
-    return `- ${product.name}${selection} × ${item.quantity}${price}`;
+    return `- ${product.name}${selection} — ${filament?.label || "kleur nog te kiezen"} × ${item.quantity}${price}`;
   });
   const body = [
     "Hoi Thomas en Joel,",
@@ -288,16 +332,34 @@ function renderProducts(query = "") {
     const imageFrame = document.createElement("div");
     imageFrame.className = "product-image-frame";
 
-    const image = document.createElement("img");
-    image.className = "product-image";
-    image.src = `./modelen/${encodeURIComponent(product.folder)}/${encodeURIComponent(product.image)}`;
-    image.alt = `Voorbeeld van ${product.name}`;
-    image.loading = "lazy";
-    image.decoding = "async";
-    image.addEventListener("error", () => {
-      imageFrame.classList.add("image-unavailable");
-      image.remove();
-    }, { once: true });
+    const productImages = product.images || [product.image];
+    const imageContainer = productImages.length > 1
+      ? document.createElement("div")
+      : imageFrame;
+    if (imageContainer !== imageFrame) {
+      imageContainer.className = "product-image-gallery";
+      imageContainer.setAttribute("role", "group");
+      imageContainer.setAttribute("aria-label", `Foto's van ${product.name}`);
+      imageFrame.append(imageContainer);
+    }
+
+    productImages.forEach((imageFile, imageNumber) => {
+      const image = document.createElement("img");
+      image.className = "product-image";
+      image.src = `./modelen/${encodeURIComponent(product.folder)}/${encodeURIComponent(imageFile)}`;
+      image.alt = productImages.length > 1
+        ? `Voorbeeld ${imageNumber + 1} van ${product.name}`
+        : `Voorbeeld van ${product.name}`;
+      image.loading = "lazy";
+      image.decoding = "async";
+      image.addEventListener("error", () => {
+        image.remove();
+        if (!imageFrame.querySelector(".product-image")) {
+          imageFrame.classList.add("image-unavailable");
+        }
+      }, { once: true });
+      imageContainer.append(image);
+    });
 
     const imageIndex = document.createElement("span");
     imageIndex.className = "product-index";
@@ -306,13 +368,16 @@ function renderProducts(query = "") {
     const imageLabel = document.createElement("span");
     imageLabel.className = "product-image-label";
     imageLabel.textContent = "3D PRINT · P1S";
-    imageFrame.append(image, imageIndex, imageLabel);
+    imageFrame.append(imageIndex, imageLabel);
 
     const details = document.createElement("div");
     details.className = "product-details";
+    const filamentSelect = createFilamentSelect("", `Filamentkleur voor ${product.name}`);
+    filamentSelect.classList.add("product-filament-select");
+
     const category = document.createElement("p");
     category.className = "product-category";
-    category.textContent = "FIDGETS · OP AANVRAAG";
+    category.textContent = product.category || "FIDGETS · OP AANVRAAG";
 
     const title = document.createElement("h3");
     title.textContent = product.name;
@@ -325,9 +390,11 @@ function renderProducts(query = "") {
     addButton.className = "product-order";
     addButton.type = "button";
     const atLimit = getProductQuantity(product.folder) >= productQuantityLimit;
-    addButton.disabled = atLimit;
+    addButton.disabled = atLimit || !filamentSelect.value;
     addButton.innerHTML = atLimit
       ? 'Limiet bereikt <span aria-hidden="true">✓</span>'
+      : !filamentSelect.value
+        ? 'Kies een kleur <span aria-hidden="true">⌄</span>'
       : product.variants?.length > 1
         ? 'Kies model <span aria-hidden="true">⌄</span>'
         : 'In winkelmand <span aria-hidden="true">+</span>';
@@ -335,17 +402,27 @@ function renderProducts(query = "") {
       ? `Kies een model van ${product.name}`
       : `${product.name} in winkelmand doen`);
     addButton.addEventListener("click", () => {
+      if (!filamentSelect.value) return;
       if (product.variants?.length > 1) {
-        openVariantPicker(product);
+        openVariantPicker(product, filamentSelect.value);
       } else {
-        addToCart(product);
+        addToCart(product, filamentSelect.value);
       }
+    });
+    filamentSelect.addEventListener("change", () => {
+      const selected = filamentSelect.value;
+      addButton.disabled = atLimit || !selected;
+      addButton.innerHTML = atLimit
+        ? 'Limiet bereikt <span aria-hidden="true">✓</span>'
+        : product.variants?.length > 1
+          ? 'Kies model <span aria-hidden="true">⌄</span>'
+          : 'In winkelmand <span aria-hidden="true">+</span>';
     });
 
     const bottomRow = document.createElement("div");
     bottomRow.className = "product-bottom-row";
     bottomRow.append(price, addButton);
-    details.append(category, title);
+    details.append(category, title, filamentSelect);
     if (product.variants?.length > 1) {
       const variantHint = document.createElement("p");
       variantHint.className = "product-variant-hint";

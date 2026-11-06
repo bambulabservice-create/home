@@ -9,6 +9,16 @@ window.HPM_STORE_PRODUCTS = [
   { folder: "flexicorn", image: "Schermafbeelding 2026-11-06 121447.png", name: "Flexicorn", price: 16.00 },
   { folder: "infinitycube", image: "Schermafbeelding 2026-11-06 121216.png", name: "Infinity Cube", price: 0.70 },
   {
+    folder: "kerstboom",
+    images: [
+      "b4a7d679-adfe-4c67-911c-c2c86fd0223d.jpg",
+      "1fd1754a-51fc-4424-934a-7cc242722acb.jpg",
+    ],
+    name: "Kerstboom",
+    category: "KERST · OP AANVRAAG",
+    price: 4.31,
+  },
+  {
     folder: "mechanickey",
     image: "Schermafbeelding 2026-11-06 121112.png",
     name: "Mechanic Key",

@@ -17,6 +17,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
+    <script src="filament-options.js" defer></script>
     <script src="script.js" defer></script>
   </head>
   <body>
@@ -197,6 +198,13 @@
           <div class="order-card reveal">
           <div class="form-section-label"><span>01</span> Bereken je prijsindicatie</div>
           <div class="estimate-panel">
+            <label class="field filament-field" for="filament-choice">
+              <span>Kies je filamentkleur</span>
+              <select id="filament-choice" name="filament">
+                <option value="">Selecteer een kleur</option>
+              </select>
+            </label>
+            <p class="weight-hint">Wit is bijna op; oranje is filament van een derde partij. Beschikbaarheid kan wisselen.</p>
             <label class="field weight-field" for="weight">
               <span>Filamentgewicht uit Bambu Studio</span>
               <span class="weight-input-wrap"><input id="weight" type="number" name="weight" min="1" step="1" value="100" /><span>gram</span></span>
