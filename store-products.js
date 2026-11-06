@@ -7,7 +7,12 @@ window.HPM_STORE_PRODUCTS = [
   { folder: "fidgetcube", image: "Schermafbeelding 2026-11-06 115648.png", name: "Fidget Cube", price: 2.30 },
   { folder: "flexi slug", image: "Schermafbeelding 2026-11-06 121539.png", name: "Flexi Slug", price: 4.70 },
   { folder: "flexicorn", image: "Schermafbeelding 2026-11-06 121447.png", name: "Flexicorn", price: 16.00 },
-  { folder: "infinitycube", image: "Schermafbeelding 2026-11-06 121216.png", name: "Infinity Cube", price: 0.70 },
+  {
+    folder: "infinitycube",
+    images: ["infinitycube.jpg", "infinitycube2.jpg"],
+    name: "Infinity Cube",
+    price: 0.70,
+  },
   {
     folder: "kerstboom",
     images: [
